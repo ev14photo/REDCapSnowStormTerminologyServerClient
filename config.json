@@ -1,0 +1,226 @@
+{
+    "name": "Termnology Server Configured By TAGS Access Module",
+    "namespace": "TSBTAM\\SnowstormTerminologyServerByTAGSExternalModule",
+    "description": "This module is based in Simple Ontology Module - v0.5 and provides access to terminology external REST servers configuring metghod and otres vars via action tags.",
+    "documentation": "README.md",
+    "tt_name": "module_name",
+    "tt_description": "module_description",
+    "tt_documentation": "doc_path",
+    "authors": [
+        {
+            "name": "Javier Armendáriz",
+            "email": "jarmendariz@unav.es",
+            "institution": "Biobanco Universidad de Navarra (Adaptación a Servidor REST)"
+        }
+    ],
+    "permissions": [
+        "redcap_every_page_before_render"
+    ],
+    "enable-every-page-hooks-on-system-pages": false,
+    "system-settings": [
+        {
+            "key": "site-category-list",
+            "tt_name": "site_category_list",
+            "name": "List of terminologies for the site",
+            "required": false,
+            "type": "sub_settings",
+            "repeatable": true,
+            "sub_settings": [
+                {
+                    "key": "site-name",
+                    "tt_name": "site_name",
+                    "name": "Terminology Name",
+                    "required": false,
+                    "type": "text"
+                },
+                {
+                    "key": "site-category",
+                    "tt_name": "site_category",
+                    "name": "Terminology Category",
+                    "required": false,
+                    "type": "text"
+                },
+                {
+                    "key": "server_url",
+                    "tt_name": "server_url",
+                    "name": "Terminology URL Server",
+                    "required": false,
+                    "type": "text"
+                },
+                {
+                    "key": "modify_server_url_by_actiontag_allowed",
+                    "tt_name": "modify_url_by_actiontag_allowed",
+                    "name": "Allow URL change by action TERMSERVERURL action tag",
+                    "type": "checkbox"
+                },
+                {
+                    "key": "server_method",
+                    "tt_name": "server_method",
+                    "name": "Terminology Server Method",
+                    "required": false,
+                    "type": "text"
+                },
+                {
+                    "key": "modify_server_method_by_actiontag_allowed",
+                    "tt_name": "modify_server_method_by_actiontag_allowed",
+                    "name": "Allow change server method by action METHOD action tag",
+                    "type": "checkbox"
+                },
+                {
+                    "key": "site-search-type",
+                    "tt_name": "site_search_type",
+                    "name": "Search Type",
+                    "required": true,
+                    "type": "dropdown",
+                    "choices": [
+                        {
+                            "value": "word",
+                            "tt_name": "search_type_word",
+                            "name": "Word Based"
+                        },
+                        {
+                            "value": "full",
+                            "tt_name": "search_type_full",
+                            "name": "Full Match"
+                        }
+                    ]
+                },
+                {
+                    "key": "site-return-no-result",
+                    "tt_name": "site_return_no_result",
+                    "name": "Return 'No Results Found'",
+                    "type": "checkbox"
+                },
+                {
+                    "key": "site-no-result-label",
+                    "tt_name": "site_no_result_label",
+                    "name": "No Results Label",
+                    "type": "text"
+                },
+                {
+                    "key": "site-no-result-code",
+                    "tt_name": "site_no_result_code",
+                    "name": "No Results Code",
+                    "type": "text"
+                },
+                {
+                    "key": "site-limit-results",
+                    "tt_name": "site_limit_results",
+                    "name": "Results Number Limit",
+                    "type": "text"
+                },
+                {
+                    "key": "site-rest-service-token",
+                    "tt_name": "site_rest_service_token",
+                    "name": "REST Service TOKEN",
+                    "type": "text"
+                }
+            ]
+        }
+    ],
+    "project-settings": [
+        {
+            "key": "project-category-list",
+            "tt_name": "project_category_list",
+            "name": "List of Terminologies for the project",
+            "required": false,
+            "type": "sub_settings",
+            "repeatable": true,
+            "sub_settings": [
+                {
+                    "key": "project-name",
+                    "tt_name": "project_name",
+                    "name": "Terminology Name",
+                    "required": false,
+                    "type": "text"
+                },
+                {
+                    "key": "project-category",
+                    "tt_name": "project_category",
+                    "name": "Terminology Category",
+                    "required": false,
+                    "type": "text"
+                },
+                {
+                    "key": "project_url",
+                    "tt_name": "server_url",
+                    "name": "Terminology URL Server",
+                    "required": false,
+                    "type": "text"
+                },
+                {
+                    "key": "modify_project_url_by_actiontag_allowed",
+                    "tt_name": "modify_url_by_actiontag_allowed",
+                    "name": "Allow URL change by action TERMSERVERURL action tag",
+                    "type": "checkbox"
+                },
+                {
+                    "key": "project_method",
+                    "tt_name": "server_method",
+                    "name": "Terminology Server Method",
+                    "required": false,
+                    "type": "text"
+                },
+                {
+                    "key": "modify_project_method_by_actiontag_allowed",
+                    "tt_name": "modify_server_method_by_actiontag_allowed",
+                    "name": "Allow change server method by action METHOD action tag",
+                    "type": "checkbox"
+                },
+                {
+                    "key": "project-search-type",
+                    "tt_name": "project_search_type",
+                    "name": "Search Type",
+                    "required": true,
+                    "type": "dropdown",
+                    "choices": [
+                        {
+                            "value": "word",
+                            "tt_name": "search_type_word",
+                            "name": "Word Based"
+                        },
+                        {
+                            "value": "full",
+                            "tt_name": "search_type_full",
+                            "name": "Full Match"
+                        }
+                    ]
+                },
+                {
+                    "key": "project-return-no-result",
+                    "tt_name": "project_return_no_result",
+                    "name": "Return 'No Results Found'",
+                    "type": "checkbox"
+                },
+                {
+                    "key": "project-no-result-label",
+                    "tt_name": "project_no_result_label",
+                    "name": "No Results Label",
+                    "type": "text"
+                },
+                {
+                    "key": "project-no-result-code",
+                    "tt_name": "project_no_result_code",
+                    "name": "No Results Code",
+                    "type": "text"
+                },
+                {
+                    "key": "project-limit-results",
+                    "tt_name": "project_limit_results",
+                    "name": "Results Number Limit",
+                    "type": "text"
+                },
+                {
+                    "key": "project-rest-service-token",
+                    "tt_name": "project_rest_service_token",
+                    "name": "REST Service TOKEN",
+                    "type": "text"
+                }
+            ]
+        }
+    ],
+    "compatibility": {
+        "php-version-min": "5.4.0",
+        "redcap-version-min": "8.8.1"
+    }
+}
