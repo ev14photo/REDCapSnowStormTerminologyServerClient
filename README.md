@@ -9,7 +9,7 @@ This module allows access to a SnowStorm service as a terminology server by conf
 There are two parameters that can be set at configuration levels for each of the terminology access sevens: The server URL (@TERMSERVERURL) (https://snowstorm-training.snomedtools.org/snowstorm/snomed-ct/) and the service you wish to access (@METHOD).
 
 It is also possible to establish a limitation so that these parameters cannot be altered from action tags.
-![logo](/config_server.png "Server config")
+![logo](/config_server_en.png "Server config")
 
 ### Query parameters
 
