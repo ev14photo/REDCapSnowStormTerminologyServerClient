@@ -4,56 +4,22 @@ namespace TSBTAM\SnowstormTerminologyServerByTAGSExternalModule;
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
-
 class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalModule implements \OntologyProvider
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-        // Tomamos OntologyManager
-        $manager = \OntologyManager::getOntologyManager();
-        $manager->addProvider($this);
-	
-		//Y aqui comienza la parte que toma las action tags y las mete como variables para llamar al servidor, metodo etc etc.... 
-		if (isset($_GET['field'])){
-            $field = $_GET['field'];
-            if (isset($Proj->metadata[$_GET['field']])) {
-                $annotations = $Proj->metadata[$field]['field_annotation'];
-            }
-            else if (isset($_GET['pid'])){
-                $project_id = $_GET['pid'];
-                $dd_array = \REDCap::getDataDictionary($project_id, 'array', false, array($field));
-                $annotations = $dd_array[$field]['field_annotation'];
-
-            }
-
-			$tags = explode(';',$dd_array[$field]['field_annotation']);
-			foreach ($tags as $tag) {
-				list($k, $v) = explode('=', $tag);
-				global $anotaciones;
-				$anotaciones[trim($k)] = $v;
-			}
-		//Aqui termina la captura de action tags
-
-        }
-    }
-
-
-
-
     public function redcap_every_page_before_render($project_id)
     {
-		 global $Proj;
+        $manager = \OntologyManager::getOntologyManager();
+        $manager->addProvider($this);
     }
 
 
-	//Tenemos la configuración en la variable settings, y en este punto paso a validarlas para que no haya errores
+	//Config in settings var, so validate correct params
 
     public function validateSettings($settings)
     {
         $errors = '';
-        // La categoría no tiene html tags o comillas
+
         $siteCategory = $settings['site-category'];
         foreach ($siteCategory as $category) {
             if ($category != strip_tags($category)
@@ -88,7 +54,7 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
         $siteCNRCode = $settings['site-no-result-code'];
         $siteCNRLabel = $settings['site-no-result-label'];
             if ($returnNoResult) {
-                // chequeamos que tenemos mensaje para el fallo en código y etiqueta
+                // check error codes
                 $label = trim($siteCNRLabel[$key]);
                 $code = trim($siteCNRCode[$key]);
                 if ($label === '') {
@@ -137,7 +103,7 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
     }
 
     /**
-     * nombre de la ontologia en el desplegable de seleccion
+     * Name in listing
      */
     public function getProviderName()
     {
@@ -145,9 +111,7 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
     }
 
 
-    /**
-     * return the prefex used to denote ontologies provided by this provider.
-     */
+   
     public function getServicePrefix()
     {
         return 'SIMPLE';
@@ -208,10 +172,10 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
     }
 
     /**
-     * Devuelve un string que aparecerá en el online designer para seleccionar una ontología.
-	 * Cuando se selecciona una ontología hace una llamada javascript a update_ontology_selection($service, $category)
-     * REDCap incluye una función javascript que  <service>_ontology_changed(service, category) 
-	 * será llamasa .Esta función actualiza cualquier elemento UI si s eproduce un matc y lo borrará si no lo hace
+     * Returns a string in the online designer to select an onthology
+	 * When  selected it calls javascript to update_ontology_selection($service, $category)
+     * REDCap includes a javascript function   <service>_ontology_changed(service, category) 
+	 *  .This function updates any element if matches  and will delete value if it does not
      */
     public function getOnlineDesignerSection()
     {
@@ -259,7 +223,28 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
      */
     public function searchOntology($category, $search_term, $result_limit)
     {
-		global $anotaciones;
+		 $field = $_GET['field'];
+            if (isset($Proj->metadata[$_GET['field']])) {
+                $annotations = $Proj->metadata[$_GET['field']]['misc'];
+         }
+           else if (isset($_GET['pid'])){
+              //  $project_id = $_GET['pid'];
+                $dd_array = \REDCap::getDataDictionary($_GET['pid'], 'array', false, array($_GET['field']));
+                $annotations = $dd_array[$_GET['field']]['field_annotation'];
+
+            }
+			$tags = explode(';', $annotations);
+			foreach ($tags as $tag) {
+				list($k, $v) = explode('=', $tag);
+				global $anotaciones;
+				$anotaciones[trim($k)] = $v;
+			}
+
+			foreach ($tags as $tag) {
+				list($k, $v) = explode('=', $tag);
+				global $anotaciones;
+				$anotaciones[trim($k)] = $v;
+			}
 
 
 		$systemCategories = $this->getSystemCategories();
@@ -285,7 +270,7 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
 				//Dentro de cada bucle voy a poner la opcion de si hay token, y si lo hay lo meto en la cadena
 				
 				
-				//Aqui mucho ojo que se ha desactivado cualquier validacion SSL para que funcione el acceso a exponente que no tiene certificado
+				//SSL access can be forced, or not
 				$arrContextOptions=array(
 					"ssl"=>array(
 						"verify_peer"=>false,
@@ -317,15 +302,15 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
 
 				if (strlen($anotaciones['@ACTIVEFILTER'])>0) {
 					$parms['activeFilter']  = $anotaciones['@ACTIVEFILTER'];
-					//Solo conceptos activos
+					//Only active concepts
 				}
 				if (strlen($anotaciones['@SEMANTICTAG'])>0) {
 					$parms['semanticTag']  = $anotaciones['@SEMANTICTAG'];
-					//Semantic tag (categoría como hallazgp, procedimiento....)
+					//Semantic tag (category....)
 				}
 				if ($anotaciones['@GROUPBYCONCEPT']>0) {
 					$parms['groupbyconcept'] = $anotaciones['@GROUPBYCONCEPT'];
-					//Agrupar por conceptos (solo un resultado por concepto aunque haya varios descriptores que apunten al mismo)
+					//Group by concept (Only one result if multiple descriptions points to same code)
 				}
 				if ($anotaciones['@OFFSET']>0) {
 					$parms['offset'] = $anotaciones['@OFFSET'];
@@ -340,34 +325,33 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
 				elseif ($limit>0) {
 					$parms['limit'] = $limit;
 					$result_limit = $limit;
-					//si no se establece limite por action tags toma el limite de la configuración para evitar sobrecargas
+					//If no limit is established it get a default value
 				}
 				
 				
-				//Aqui hay que construir un arbol de decisiones de algun modo para solo poder lanzar consultas coherentes.
-				//Tabien decidir desde configuración si se puede modificar por action tags la url, el método y si se quiere limitar algo.
+				//TODO: Aqui hay que construir un arbol de decisiones de algun modo para solo poder lanzar consultas coherentes.
 				
-				//El texto por el que se busca viebne desde RedCAP como $search_term y lo hemos modificado con rawurlencode para poder pasarlo con seguridad como  una URL
+				//Text to search for cames from RedCAP as $search_term ,  rawurlencode to pass via URL
 				
 				$parms['term'] = $search_term_encoded;
 				
 				
-				//Finalmente, con la URL, branch y método y las action tangs compongo una llamada al servidor de terminologias, que nos devolverá una cadena json
+				//Finally, URL, branch , method and action tangs compose a  call to terminology server, an it will return a JSON string
 
 				$rawValues = file_get_contents($urlconsulta.http_build_query($parms), false, stream_context_create($arrContextOptions));
 
 			
 
-				//Hemos de descifrar el retorno json sabiendo su estructura. Desde action tags le hemos dicho en que punto del arbol JSON esta el código y la descripción
+				//json return must be decodad. From action tags the path is especified in JSON for code and description
 
 				$list = json_decode($rawValues, true);
                
                     foreach ($list['items'] as $item) {
-						//lo primero, verifico que haya retornado un código
+						//first, check if a code is returned
 						$code1 = $this->get('concept.conceptId',$item);
 						$code2 = $this->get($anotaciones['@CODES_SUB_PATH'],$item);
 
-						//Y si tengo un código debo de tener el resto de datos (descripcion, activo o no y sinónimo)
+						//If i have a code (description, active or not and synonim must be set)
                         if (isset($code1) || isset($code2)) {
 							if (strlen($anotaciones['@CODES_SUB_PATH']) > 0 && strlen($anotaciones['@DESCRIPTIONS_SUB_PATH']) > 0 ) {
 								$values[] = ['code' => $this->get($anotaciones['@CODES_SUB_PATH'],$item), 'display' => $this->get($anotaciones['@DESCRIPTIONS_SUB_PATH'],$item), 'active' => $item['active'], 'synonyms' => $item['pt']['term']];
@@ -383,7 +367,7 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
         }
 
 
-		//Una vez que tengo los resultados en el array values pasa por una función que detecta la subcadena que ha hecho match para destacarla en caso de que la búsqueda no sea de tipo full
+		//Function to highlightthe substring matching in the complete result string
 
 
         $wordResults = array();
@@ -459,7 +443,7 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
 
 
     /**
-     *  Toma un valor y retorna la etqueta que corresponde
+     *  A value and corresponding label
      */
     public function getLabelForValue($category, $value)
     {
@@ -515,9 +499,9 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
 
 
     /*
-     * Function que devuelve el valor de un elemento de un array :
+     * 
      *
-     *   Basado en dot notation
+     *   Dot notation traslation for JSON paths
      *  
      */
 
