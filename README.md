@@ -4,7 +4,7 @@
 
 
 ## Module configuration
-This module allows access to a SnowStorm service as a terminology server by configuring, in each case, all the parameters of the queries, through actiontags, from the field of the form involved.
+This module allows access to a SnowStorm service as a terminology server from REDCap configuring, in each case, all the parameters of the queries, through actiontags, from the field of the form involved.
 
 There are two parameters that can be set at configuration levels for each of the terminology access sevens: The server URL (@TERMSERVERURL) (https://snowstorm-training.snomedtools.org/snowstorm/snomed-ct/) and the service you wish to access (@METHOD).
 
