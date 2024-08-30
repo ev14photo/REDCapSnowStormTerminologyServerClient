@@ -240,11 +240,11 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
 				$anotaciones[trim($k)] = $v;
 			}
 
-			foreach ($tags as $tag) {
+			/*foreach ($tags as $tag) {
 				list($k, $v) = explode('=', $tag);
 				global $anotaciones;
 				$anotaciones[trim($k)] = $v;
-			}
+			}*/
 
 
 		$systemCategories = $this->getSystemCategories();
@@ -308,13 +308,55 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
 					$parms['semanticTag']  = $anotaciones['@SEMANTICTAG'];
 					//Semantic tag (category....)
 				}
-				if ($anotaciones['@GROUPBYCONCEPT']>0) {
+				if (strlen($anotaciones['@GROUPBYCONCEPT'])>0) {
 					$parms['groupbyconcept'] = $anotaciones['@GROUPBYCONCEPT'];
 					//Group by concept (Only one result if multiple descriptions points to same code)
 				}
-				if ($anotaciones['@OFFSET']>0) {
+				if (strlen($anotaciones['@OFFSET'])>0) {
 					$parms['offset'] = $anotaciones['@OFFSET'];
 					//Offset en los resultados
+				}
+				if (strlen($anotaciones['@DEFINITIONSTATUSFILTER'])>0) {
+					$parms['definitionstatusfilter'] = $anotaciones['@DEFINITIONSTATUSFILTER'];
+				}
+
+				if (strlen($anotaciones['@TERMACTIVE'])>0) {
+					$parms['termactive'] = $anotaciones['@TERMACTIVE'];
+					//Solo termibnos activos
+				}
+				if (strlen($anotaciones['@LANGUAGE'])>0) {
+					$parms['language'] = $anotaciones['@LANGUAGE'];
+					//lan
+				}
+				if (strlen($anotaciones['@PREFERREDIN'])>0) {
+					$parms['preferredin'] = $anotaciones['@PREFERREDIN'];
+				}
+				if (strlen($anotaciones['@ACCEPTABLEIN'])>0) {
+					$parms['acceptablein'] = $anotaciones['@ACCEPTABLEIN'];
+				}
+				if (strlen($anotaciones['@PREFERREDORACCEPTABLEIN'])>0) {
+					$parms['preferredoracceptablein'] = $anotaciones['@PREFERREDORACCEPTABLEIN'];
+				}
+				if (strlen($anotaciones['@STATEDECL'])>0) {
+					$parms['statedecl'] = $anotaciones['@STATEDECL'];
+				}
+				if (strlen($anotaciones['@CONCEPTIDS'])>0) {
+					$parms['conceptids'] = $anotaciones['@CONCEPTIDS'];
+				}
+				if (strlen($anotaciones['@SEARCHMODE'])>0) {
+					$parms['searchmode'] = $anotaciones['@SEARCHMODE'];
+				}
+				if (strlen($anotaciones['@SEARCHAFTER'])>0) {
+					$parms['searchafter'] = $anotaciones['@SEARCHAFTER'];
+				}
+				if (strlen($anotaciones['@ACCEPT-LANGUAGE'])>0) {
+					$parms['accept-language'] = $anotaciones['@ACCEPT-LANGUAGE'];
+				}
+				if (strlen($anotaciones['@INCLUDEDESCENDANTCOUNT'])>0) {
+					$parms['includedescendantcount'] = $anotaciones['@INCLUDEDESCENDANTCOUNT'];
+				}
+				if (strlen($anotaciones['@FORM'])>0) {
+					$parms['form'] = $anotaciones['@FORM'];
 				}
 				if ($anotaciones['@LIMIT']>0) {
 					$parms['limit'] = $anotaciones['@LIMIT'];
@@ -322,13 +364,20 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
 
 					//Limite de resultados
 				}
+				if (strlen($anotaciones['@ECL'])>0) {
+					$parms['ecl'] = $anotaciones['@ECL'];
+					//$ecl = $anotaciones['@ecl'];
+
+				}
 				elseif ($limit>0) {
 					$parms['limit'] = $limit;
 					$result_limit = $limit;
 					//If no limit is established it get a default value
 				}
 				
-				
+	
+
+
 				//TODO: Aqui hay que construir un arbol de decisiones de algun modo para solo poder lanzar consultas coherentes.
 				
 				//Text to search for cames from RedCAP as $search_term ,  rawurlencode to pass via URL
@@ -339,6 +388,15 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
 				//Finally, URL, branch , method and action tangs compose a  call to terminology server, an it will return a JSON string
 
 				$rawValues = file_get_contents($urlconsulta.http_build_query($parms), false, stream_context_create($arrContextOptions));
+
+				//error_log($urlconsulta.http_build_query($parms));
+
+				if ($anotaciones['@SAVE_LOGS'] == "true") {
+					$this->log($urlconsulta.http_build_query($parms),  $parms);
+				}
+
+    /* Log what was done*/
+				//error_log($rawValues);
 
 			
 
@@ -427,7 +485,7 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
 
         $result_limit = (is_numeric($result_limit) ? $result_limit : 20);
 
-        if (count($results) < $result_limit) {
+        if (count($results) < 1) {
             // add no results found
             $return_no_result = $categoryData['return-no-result'];
             if ($return_no_result) {

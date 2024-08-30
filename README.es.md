@@ -46,7 +46,7 @@ Dependiendo del servicio SnowStorm al que se consulte los parámetros son unos u
 
 @PREFERREDORACCEPTABLEIN; *
 
-@ECL; *
+@ECL *; 
 
 @STATEDECL; *
 
@@ -73,6 +73,9 @@ Dependiendo del servicio SnowStorm al que se consulte los parámetros son unos u
 Los campos indicados con * no se encuntran disponibles en el proceso de validación del programa.
 
 
+## Registro de la URL a la que se hace la consulta
+
+Como valor de configuración añadido, es posible establecer el action tag @SAVE_LOGS a true. En ese caso quedará registro en los logs del módulo (visibles desde el panel menú, sección External Modules --> View Logs) de la URL completa a la que se están haciendo las consultas.
 
 
 ![logo](/action_tags.png "SnowStorm Terminooly Client")
