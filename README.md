@@ -64,13 +64,15 @@ Depending on the SnowStorm service being consulted, the parameters are one or an
 @FORM; *
 
 The fields indicated with * are not available in the program validation process.
+![logo](/action_tags.png "SnowStorm Terminooly Client")
 
 ## Record the SnowStorm URL to which the query is made
 
 As an added configuration value, it is possible to set the @SAVE_LOGS action tag to true. In that case, there will be a record in the module logs (visible from the menu panel, External Modules --> View Logs section) of the complete URL to which the queries are being made.
 
+![logo](/SimpleOntologySettingsLogs_1.png "Log Activation")
+![logo](/SimpleOntologySettingsLogs_2.png "Log View")
 
-![logo](/action_tags.png "SnowStorm Terminooly Client")
 
 ## Code path and description in response
 

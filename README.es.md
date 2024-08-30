@@ -72,13 +72,14 @@ Dependiendo del servicio SnowStorm al que se consulte los parámetros son unos u
 
 Los campos indicados con * no se encuntran disponibles en el proceso de validación del programa.
 
+![logo](/action_tags.png "SnowStorm Terminooly Client")
 
-## Registro de la URL a la que se hace la consulta
+## Registro de la URL SnowStorm a la que se hace la consulta
 
 Como valor de configuración añadido, es posible establecer el action tag @SAVE_LOGS a true. En ese caso quedará registro en los logs del módulo (visibles desde el panel menú, sección External Modules --> View Logs) de la URL completa a la que se están haciendo las consultas.
 
-
-![logo](/action_tags.png "SnowStorm Terminooly Client")
+![logo](/SimpleOntologySettingsLogs_1.png "Log Activation")
+![logo](/SimpleOntologySettingsLogs_2.png "Log View")
 
 ## Ruta del código y descripción en la respuesta
 
