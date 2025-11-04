@@ -446,6 +446,9 @@ class SnowstormTerminologyServerByTAGSExternalModule extends AbstractExternalMod
                 continue;
             }
             $code = $val['code'];
+			
+			if (!is_array($hideChoice)) {$hideChoice = [];}
+	
             if (in_array($code, $hideChoice)){
                 // in hide choice list
                 continue;
